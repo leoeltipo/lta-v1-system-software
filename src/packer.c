@@ -40,8 +40,8 @@ void packer_init(packer_sw_group_status_t *packer_sw)
 	packer_sw->start.reg_mask = PACKER_START_REG_MASK;
 	strcpy(packer_sw->start.name,"packStart");
 
-	PACKER_mWriteReg(XPAR_PACKER_S00_AXI_BASEADDR, packer_sw->source.reg_offset, 		packer_sw->source.status);
-	PACKER_mWriteReg(XPAR_PACKER_S00_AXI_BASEADDR, packer_sw->start.reg_offset, 		packer_sw->start.status);
+	PACKER_mWriteReg(XPAR_PACKER_BASEADDR, packer_sw->source.reg_offset, 		packer_sw->source.status);
+	PACKER_mWriteReg(XPAR_PACKER_BASEADDR, packer_sw->start.reg_offset, 		packer_sw->start.status);
 }
 
 int packer_change_sw_status(packer_sw_status_t *packer_sw_status, uint8_t value)
@@ -55,7 +55,7 @@ int packer_change_sw_status(packer_sw_status_t *packer_sw_status, uint8_t value)
 		return -1;
 	}
 
-	PACKER_mWriteReg(XPAR_PACKER_S00_AXI_BASEADDR, packer_sw_status->reg_offset,(uint32_t) packer_sw_status->status);
+	PACKER_mWriteReg(XPAR_PACKER_BASEADDR, packer_sw_status->reg_offset,(uint32_t) packer_sw_status->status);
 
 	return 0;
 }
