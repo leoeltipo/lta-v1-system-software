@@ -17,3 +17,6 @@ Software for the control of the LTA board first fabrication.
 9) In Xilinx SDK, right click on project name and Refresh.
 10) Add inc/ path in project settings.
 11) That's it. Commit, push and pull the usual way from command line.
+
+NOTE: the first push, execute:
+git push --set-upstream origin master
