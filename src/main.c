@@ -21,6 +21,7 @@
 #include "smart_buffer.h"
 #include "eth.h"
 #include "io_func.h"
+#include "flash.h"
 
 system_state_t sys;
 
@@ -51,6 +52,9 @@ int main()
 
    mprint("--- Initialize Uart ---\r\n");
    uart_init(XPAR_UART_DEVICE_ID);
+
+   mprint("--- Initialize Flash ---\r\n");
+   flash_init(XPAR_SPI_FLASH_DEVICE_ID, &(sys.flash));
 
    mprint("--- Initialize sequencer ---\r\n");
    sequencer_init(&(sys.seq));
@@ -100,6 +104,13 @@ int main()
    mprint("--- System Initialization Completed ---\r\n");
    mprint("--- ############################### ---\r\n");
    mprint("\r\n");
+
+   mprint("--- Setting IP stored in flash ---\r\n");
+   char ip[50];
+   io_sprintf(ip, "--- New IP: %s\r\n",sys.flash.ip.str);
+   mprint(ip);
+   mprint("Warning: communication with the ETH will be lost!!!\r\n");
+   gpio_eth_change_state(&(sys.eth.ip_low), flash_getIpLow(&(sys.flash)));
 
    // Blink led to indicate end of initialization.
    for (int i=0; i<10; i++)

@@ -23,6 +23,7 @@
 #include "leds.h"
 #include "smart_buffer.h"
 #include "eth.h"
+#include "flash.h"
 
 #define SPI_LDO_VDRAIN_SLAVE_SELECT AD5293_SLAVE_SELECT_0
 #define SPI_LDO_VDD_SLAVE_SELECT	AD5293_SLAVE_SELECT_1
@@ -56,6 +57,7 @@ typedef struct {
 	leds_t						leds;
 	smart_buffer_group_status_t	smart_buffer;
 	eth_t						eth;
+	flash_version_t				flash;
 } system_state_t;
 
 

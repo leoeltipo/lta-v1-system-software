@@ -28,6 +28,7 @@
 #include "smart_buffer.h"
 #include "io_func.h"
 #include "eth.h"
+#include "flash.h"
 
 
 int excecute_interpret(system_state_t *sys, char *userWord, char *errStr)
@@ -60,6 +61,10 @@ int excecute_interpret(system_state_t *sys, char *userWord, char *errStr)
 	   {
 		   excecute_help(sys);
 		   return 0;
+	   }
+	   else if (strcmp(commandWord[0].word,"flash_info") == 0)
+	   {
+		   flash_printBoardInfo(&(sys->flash));
 	   }
 	   else
 	   {
