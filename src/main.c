@@ -120,8 +120,8 @@ int main()
    mprint("\r\n");
    tdelay_s(2);
 
-   mprint("--- Setting IP stored in flash: %s ---\r\n");
-   mprint("Warning: communication with board will be lost!!!\r\n");
+   mprint("WARNING: Setting IP stored in flash.\r\n");
+   mprint("WARNING: Communication with board will be lost!!!\r\n");
    eth_change_ip(&(sys.eth.ipEth), sys.flash.ip.str);
    tdelay_s(2);
 

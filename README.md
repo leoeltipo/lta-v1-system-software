@@ -4,19 +4,13 @@ Software for the control of the LTA board first fabrication.
 ###################################################
 ### Clonning repository to work with Xilinx SDK ###
 ###################################################
-1) Create a SDK the usual way (Export Hardware and Launch SDK).
-2) Create an application (Empty app) the usual way.
-3) Navigate the Git Console to that location, where the src/ directory is.
-4) git init to start a new empty git repository.
-5) Register that repo with the remote GitHub repo:
--> git remote add origin https://github.com/leoeltipo/lta-v1-system-software.git
+* Create a SDK the usual way (Export Hardware and Launch SDK).
+* Create an application (Empty app) the usual way.
+* Clone the repository to any location.
+* Copy the contents of the directory (.git, inc/ and src/) into the newly created empty application.
 
-6) git pull origin master
-7) git push origin master
-8) Now the files are already cloned. 
-9) In Xilinx SDK, right click on project name and Refresh.
-10) Add inc/ path in project settings.
-11) That's it. Commit, push and pull the usual way from command line.
+Now the files are already cloned.
 
-NOTE: the first push, execute:
-git push --set-upstream origin master
+* In Xilinx SDK, right click on project name and Refresh.
+* Add inc/ path in project settings.
+* That's it. Commit, push and pull the usual way from command line.
