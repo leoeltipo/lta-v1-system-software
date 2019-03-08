@@ -459,13 +459,13 @@ int excecute_get(system_state_t *sys, const char *varID, char *errStr) {
 		if (flag_all)
 		{
 			// Print value.
-			io_sprintf(str, "%s = %d\r\n", eth_var->name, eth_var->status);
+			io_sprintf(str, "%s = %s\r\n", eth_var->name, eth_var->valStr);
 			mprint(str);
 		}
 		else if (strcmp(varID, eth_var->name)==0)
 		{
 			// Print value.
-			io_sprintf(str, "%s = %d\r\n", eth_var->name, eth_var->status);
+			io_sprintf(str, "%s = %s\r\n", eth_var->name, eth_var->valStr);
 			mprint(str);
 
 			return 0;
@@ -482,8 +482,7 @@ int excecute_get(system_state_t *sys, const char *varID, char *errStr) {
 		// Print sequencer program.
 		for(int i = 0; i < sys->seq.sequencer.size; i++)
 		{
-			// FIXME: print 32 bits values in hex.
-			io_sprintf(str, "@%d, %u\r\n", i, sys->seq.sequencer.program[i]);
+			io_sprintf(str, "@%d, %x\r\n", i, sys->seq.sequencer.program[i]);
 			mprint(str);
 		}
 
@@ -827,8 +826,6 @@ int excecute_set(system_state_t *sys, char *varID, char *varVal, char *errStr) {
 		smart_buffer_var++;
 	}
 
-
-
 	// Ethernet.
 	eth_status_t *eth_var = (eth_status_t *) &(sys->eth);
 	int nEth = sizeof(eth_t)/sizeof(eth_status_t);
@@ -836,7 +833,7 @@ int excecute_set(system_state_t *sys, char *varID, char *varVal, char *errStr) {
 	{
 		if (strcmp(varID, eth_var->name)==0)
 		{
-			status = gpio_eth_change_state(eth_var, (uint8_t) value);
+			status = eth_change_ip(eth_var, varVal);
 
 			if (status != 0)
 			{

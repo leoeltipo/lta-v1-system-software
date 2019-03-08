@@ -540,6 +540,7 @@ int flash_readBoardInfo(flash_version_t *info)
 {
 	int status;
 	u32 Addr = FLASH_BOARD_INFO_ADDR;
+	uint32_t tmp1, tmp2;
 
 	status = flash_writeEnable();
 	if(status != XST_SUCCESS) {
@@ -594,6 +595,24 @@ int flash_readBoardInfo(flash_version_t *info)
 				info->firm_date.year);
 	strcpy(info->firm_date.str, str);
 
+	// Firmware hash.
+	tmp1 = 0;
+	for (int i=0; i<4; i++)
+	{
+		info->firm_hash.hash[i] = ReadBuffer[idx++];
+		tmp1 += (uint32_t) (info->firm_hash.hash[i] << 8*i);
+	}
+	tmp2 = 0;
+	for (int i=0; i<4; i++)
+	{
+		info->firm_hash.hash[4+i] = ReadBuffer[idx++];
+		tmp2 += (uint32_t) (info->firm_hash.hash[4+i] << 8*i);
+	}
+	io_sprintf( str, "%x%x",
+				tmp1,
+				tmp2);
+	strcpy(info->firm_hash.str, str);
+
 	// Software version.
 	info->soft_version.minor = ReadBuffer[idx++];
 	info->soft_version.major = ReadBuffer[idx++];
@@ -615,6 +634,24 @@ int flash_readBoardInfo(flash_version_t *info)
 				info->soft_date.day,
 				info->soft_date.year);
 	strcpy(info->soft_date.str, str);
+
+	// Software hash.
+	tmp1 = 0;
+	for (int i=0; i<4; i++)
+	{
+		info->soft_hash.hash[i] = ReadBuffer[idx++];
+		tmp1 += (uint32_t) (info->soft_hash.hash[i] << 8*i);
+	}
+	tmp2 = 0;
+	for (int i=0; i<4; i++)
+	{
+		info->soft_hash.hash[4+i] = ReadBuffer[idx++];
+		tmp2 += (uint32_t) (info->soft_hash.hash[4+i] << 8*i);
+	}
+	io_sprintf( str, "%x%x",
+				tmp1,
+				tmp2);
+	strcpy(info->soft_hash.str, str);
 
 	// Unique board id.
 	info->id.val = ReadBuffer[idx++];
@@ -652,19 +689,19 @@ int flash_printBoardInfo(flash_version_t *info)
 	xil_printf("--> Base Address:\t0x%08x:\r\n", info->addr);
 	xil_printf("--> Firmware version:\t%s\r\n", info->firm_version.str);
 	xil_printf("--> Firmware date:\t%s\r\n", info->firm_date.str);
+	xil_printf("--> Firmware hash:\t%s\r\n", info->firm_hash.str);
 	xil_printf("--> Software version:\t%s\r\n", info->soft_version.str);
 	xil_printf("--> Software date:\t%s\r\n", info->soft_date.str);
+	xil_printf("--> Software hash:\t%s\r\n", info->soft_hash.str);
 	xil_printf("--> Unique ID:\t\t0x%08x\r\n", info->id.val);
 	xil_printf("--> Board IP:\t\t%s\r\n", info->ip.str);
 
 	return XST_SUCCESS;
 }
 
-uint8_t flash_getIpLow(flash_version_t *info)
+uint32_t flash_getIp(flash_version_t *info)
 {
-	u32 ip = info->ip.val;
-	ip &= 0xFF;
-	return (uint8_t)ip;
+	return info->ip.val;
 }
 
 int flash_eraseSubSector(u32 Addr)

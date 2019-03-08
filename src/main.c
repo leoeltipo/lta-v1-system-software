@@ -80,17 +80,6 @@ int main()
    mprint("--- Initialize Telemetry ---\r\n");
    telemetry_init(&(sys.telemetry), XPAR_SPI_TELEMETRY_DEVICE_ID, XPAR_GPIO_TELEMETRY_DEVICE_ID);
 
-	/*ad5293_creg_wr(1, 0, SPI_LDO_VDRAIN_SLAVE_SELECT);
-	ad5293_creg_wr(1, 0, SPI_LDO_VDD_SLAVE_SELECT);
-	ad5293_creg_wr(1, 0, SPI_LDO_VR_SLAVE_SELECT);
-	ad5293_creg_wr(1, 0, SPI_LDO_VSUB_SLAVE_SELECT);*/
-
-	// Enable LDOs.
-	/*ad5293_sw_en(GPIO_LDO_VDRAIN, 1);
-   	ad5293_sw_en(GPIO_LDO_VDD, 1);
-   	ad5293_sw_en(GPIO_LDO_VR, 1);
-   	ad5293_sw_en(GPIO_LDO_VSUB, 1);*/
-
    // Wait until the sequencer finishes executing.
    int status = 0;
    int nWords = 0;
@@ -100,17 +89,41 @@ int main()
    for	(int u = 0; u<USERCOMMANDLENGTH; u = u +1) {userWord[u] = 0;}
    int userWordInd = 0;
 
+   mprint("\r\n");
+   mprint("--- ################# ---\r\n");
+   mprint("--- Board Information ---\r\n");
+   mprint("--- ################# ---\r\n");
+   mprint("\r\n");
+
+   char info[50];
+   io_sprintf(info, "-> Fimrware Version:\t%s\r\n", sys.flash.firm_version.str);
+   mprint(info);
+   io_sprintf(info, "-> Fimrware Date:\t%s\r\n", sys.flash.firm_date.str);
+   mprint(info);
+   io_sprintf(info, "-> Fimrware Hash:\t%s\r\n", sys.flash.firm_hash.str);
+   mprint(info);
+   io_sprintf(info, "-> Software Version:\t%s\r\n", sys.flash.soft_version.str);
+   mprint(info);
+   io_sprintf(info, "-> Software Date:\t%s\r\n", sys.flash.soft_date.str);
+   mprint(info);
+   io_sprintf(info, "-> Software Hash:\t%s\r\n", sys.flash.soft_hash.str);
+   mprint(info);
+   io_sprintf(info, "-> Board ID:\t\t%x\r\n", sys.flash.id);
+   mprint(info);
+   io_sprintf(info, "-> Board IP:\t\t%s\r\n", sys.flash.ip.str);
+   mprint(info);
+   mprint("\r\n");
+
    mprint("--- ############################### ---\r\n");
    mprint("--- System Initialization Completed ---\r\n");
    mprint("--- ############################### ---\r\n");
    mprint("\r\n");
+   tdelay_s(2);
 
-   mprint("--- Setting IP stored in flash ---\r\n");
-   char ip[50];
-   io_sprintf(ip, "--- New IP: %s\r\n",sys.flash.ip.str);
-   mprint(ip);
-   mprint("Warning: communication with the ETH will be lost!!!\r\n");
-   gpio_eth_change_state(&(sys.eth.ip_low), flash_getIpLow(&(sys.flash)));
+   mprint("--- Setting IP stored in flash: %s ---\r\n");
+   mprint("Warning: communication with board will be lost!!!\r\n");
+   eth_change_ip(&(sys.eth.ipEth), sys.flash.ip.str);
+   tdelay_s(2);
 
    // Blink led to indicate end of initialization.
    for (int i=0; i<10; i++)
