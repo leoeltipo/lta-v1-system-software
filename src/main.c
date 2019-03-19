@@ -30,11 +30,22 @@ int main()
    //Xil_ICacheEnable();
    //Xil_DCacheEnable();
 
-   // Init generic vars, eth driver, io_func (stdout control) and interrupts.
+   // Init generic vars.
    generic_vars_init(&(sys.generic_vars));
+
+   // Initialize ethernet and io.
    eth_init(XPAR_GPIO_ETH_DEVICE_ID,&(sys.eth));
    io_init(&sys);
+
+   // Initialize interrupts.
    intc_init(XPAR_INTC_0_DEVICE_ID);
+
+   // Initialize flash.
+   flash_init(XPAR_SPI_FLASH_DEVICE_ID, &(sys.flash));
+
+   // Configure board IP.
+   eth_change_ip(&(sys.eth.ipEth), sys.flash.ip.str);
+   tdelay_s(2);
 
    mprint("--- ################### ---\n\r");
    mprint("--- Initializing System ---\n\r");
@@ -52,9 +63,6 @@ int main()
 
    mprint("--- Initialize Uart ---\r\n");
    uart_init(XPAR_UART_DEVICE_ID);
-
-   mprint("--- Initialize Flash ---\r\n");
-   flash_init(XPAR_SPI_FLASH_DEVICE_ID, &(sys.flash));
 
    mprint("--- Initialize sequencer ---\r\n");
    sequencer_init(&(sys.seq));
@@ -118,11 +126,6 @@ int main()
    mprint("--- System Initialization Completed ---\r\n");
    mprint("--- ############################### ---\r\n");
    mprint("\r\n");
-   tdelay_s(2);
-
-   mprint("WARNING: Setting IP stored in flash.\r\n");
-   mprint("WARNING: Communication with board will be lost!!!\r\n");
-   eth_change_ip(&(sys.eth.ipEth), sys.flash.ip.str);
    tdelay_s(2);
 
    // Blink led to indicate end of initialization.
